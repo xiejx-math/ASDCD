@@ -68,7 +68,7 @@ if ~strategy
 end
 %%%
 RSE(1)=1;
-normAfro=norm(A,'fro')^2;
+normAfro=sum(sum(A.^2));
 ell=ceil(m/tau);
 blockAnormfro=zeros(ell,1);
 for i=1:ell
@@ -78,7 +78,7 @@ for i=1:ell
         ps=((i-1)*tau+1):1:(i*tau);
     end
     Aps=A(ps,:);
-    blockAnormfro(i)=norm(A(ps,:),'fro')^2;
+    blockAnormfro(i)=full(sum(sum(A(ps,:).^2)));
     Aarrs{i}=Aps;
     barrs{i}=b(ps);
 end
@@ -130,8 +130,9 @@ while ~stopc
             stopc=1;
         end
     else
-        %error(iter+1)=norm(x-xold)/norm(x);
-        error1=(norm(A*x-b))^2/normb;
+        res = A * x - b;
+        error1 = (res' * res)/normb;
+        %error1=(norm(A*x-b))^2/normb;
         RSE(iter+1)=error1;
         if  error1<TOL || iter>=Max_iter
             stopc=1;
